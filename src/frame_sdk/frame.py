@@ -46,6 +46,11 @@ class Frame:
             await self.inject_all_library_functions()
             await self.run_lua(f"is_awake=true;frame.time.utc({int(time.time())});frame.time.zone('{time.strftime('%z')[:3]}:{time.strftime('%z')[3:]}')", checked=True)
 
+    async def ensure_disconnected(self) -> None:
+        """Ensure the Frame is disconnected, disconnecting if necessary."""
+        if self.bluetooth.is_connected():
+            await self.bluetooth.disconnect()
+    
     async def evaluate(self, lua_expression: str) -> str:
         """Evaluates a Lua expression on the device and returns the result.
         
